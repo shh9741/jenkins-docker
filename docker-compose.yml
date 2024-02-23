@@ -1,0 +1,5 @@
+version: "3"
+services:
+  preprocess:
+    build: ./gradle
+    container_name: risk-preprocess

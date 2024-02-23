@@ -1,41 +1,14 @@
 pipeline {
-	environment {
-	    DOCKERHUB_CREDENTIALS = credentials('docker_hub_credentials')
-		repository = 'ifinfosystem/data_management'
-		build_repository = '/var/jenkins_home/workspace/risk_build'
-	}
-	agent any
-	stages {
-		stage('Build the image') {
-			steps {
-				sh 'docker build -t $repository $build_repository'
-			}
-		}
-        stage('Login'){
-              steps{
-                  sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin' // docker hub 로그인
-              }
+    agent any
+    
+    stages {
+        
+        stage('github-clone') {
+            steps {
+                git branch: 'master', credentialsId: 'github_token', url: 'https://github.com/shh9741/jenkins-docker.git'
+            }
         }
-		stage('Push to Docker hub') {
-			steps {
-				sh 'docker push $repository:latest'
-			}
-		}
-	}
-	post {
-        success {
-            slackSend (
-                channel: '#jenkins', 
-                color: '#00FF00', 
-                message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Success : (<${BUILD_URL}|Open>)"
-            )
-        }
-        failure {
-            slackSend (
-                channel: '#jenkins', 
-                color: '#FF0000', 
-                message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} Failure : (<${BUILD_URL}|Open>)"
-            )
-        }
-    }
+        
+   		// stage...
+   	}
 }

@@ -14,3 +14,4 @@ public class RiskManagementApplication {
         SpringApplication.run(RiskManagementApplication.class, args);
     }
 }
+// korean is good
